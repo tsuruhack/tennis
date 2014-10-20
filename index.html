@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; background:#000}
+	  /*cssのお手本として残しておく
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+	  */
+	  div.box{
+    	background-color:#0F0;
+    	width:150px;
+    	height:10px;
+		left:50%;
+	  }
+	  #mybox{
+		  position:absolute;
+		  bottom:0%;
+	  }
+	  #enebox{
+		  position:absolute;
+		  top:0%;
+	  }
+	  .ball{
+		position:absolute;
+		top:50%;
+		left:50%;
+		width: 50px;
+		height: 50px;
+		-webkit-border-radius: 50%;/* 50%でもOK */
+		-moz-border-radius: 50%;
+		border-radius: 50%;
+		background-color: #6FF;/* 円の色 */
+	  }
+	
+    </style>
+  </head>
+  <body>
+    <div class="box" id="mybox"></div>
+    <div class="box" id="enebox"></div>
+    <div class="ball" id="ball"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./socket.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+	  var player = 0;
+	  var FPS = 50;
+	  var movescale = 2;
+	  /* 相手のキー入力検知 */
+     socket.on('keydown', function(msg,p){
+		 if(msg=="1"){
+			 $('#enebox').css({'margin-left': '+=30px'});//相手機を動かす
+		 }else if(msg=="2"){
+			 $('#enebox').css({'margin-left': '-=30px'});
+		 }
+  	 });
+	 socket.on('user connected',function(p){
+		 player = p;
+	 });
+	 
+	 socket.on('update',function(rad){
+  	 	var ball = document.getElementById('ball');
+	 	var mybox = document.getElementById('mybox');
+	 	var enebox = document.getElementById('enebox');
+	 	var bl = ball.offsetLeft - 25;
+	 	var br = bl + 50;
+	 	var bt = ball.offsetTop + 25;
+	 	var bb = bt + 50;
+		var xmove = Math.cos(rad);
+		var ymove = Math.cos(rad);
+	 	$('#ball').css("margin-left","+="+ xmove*movescale+"px");
+	 	$('#ball').css("margin-top","+="+ ymove*movescale+"px");
+	  
+	 	if(bt <= 10){ //上端
+		 	if(enebox.offsetLeft <= br && bl <= (enebox.offsetLeft + enebox.offsetWidth)){//相手バーの枠内か
+				rad = (rad + 180)%360;
+		  	}
+	  	}else if(bb >= window.innerHeight - 10){//下端
+	  		if(mybox.offsetLeft <= br && bl <= (mybox.offsetLeft + enebox.offsetWidth)){
+				rad = (rad + 180)%360;
+		  	}
+	  	}
+	 });
+  
+  /* 自分のキー入力検知 */
+  document.onkeydown = Keydown;
+  function Keydown(){
+	  if(event.keyCode == 39){//→が押されたとき
+	  	socket.emit('keydown','1',player);//サーバーに送る
+	  	$('#mybox').css({'margin-left': '+=30px'});//自機を動かす
+	  }else if(event.keyCode == 37){//←が押されたとき
+	  socket.emit('keydown','2',player);
+	  	$('#mybox').css({'margin-left': '-=30px'});
+	  }
+  }
+  
+  window.onload = function() {
+	  var rad = Math.random() * 360;
+	  update(rad);
+  }
+  
+  function update(rad){
+	  socket.emit('update',rad)
+	  setTimeout(update, 1000/FPS,rad); //
+  }
+  
+    </script>
+  </body>
+</html>

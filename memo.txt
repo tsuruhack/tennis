@@ -1,0 +1,4 @@
+•Error: listen EADDRINUSE
+と出たとき
+ps aux | grep node
+でnode.jsのプロセスを調べてkillする
