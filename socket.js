@@ -20,7 +20,7 @@ io.on('connection',function(socket){
   }else{
 	  player = 0;
   }
-  //yata
+
   console.log('player%d connected',player);
   io.emit('user connected',player);
   
