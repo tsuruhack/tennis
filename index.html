@@ -13,11 +13,29 @@
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
 	  */
+	  h1{
+	  	margin: 22px;
+	  	/*color: #0F0;*/
+	  }
+	  h3{
+	  	margin-left: 30px;
+	  	/*color: #0F0;*/
+	  }
+	  p{
+	  	font-size: 20px;
+	  	color: #ff3300;
+	  }
+	  span{
+	  	font-size: 20px;
+	  	font-family: "Yu Gothic";
+	  	margin: 10px;
+	  }
 	  div.box{
     	background-color:#0F0;
     	width:150px;
     	height:10px;
 		left:50%;
+		margin-left: -75px;
 	  }
 	  #mybox{
 		  position:absolute;
@@ -38,21 +56,168 @@
 		border-radius: 50%;
 		background-color: #6FF;/* 円の色 */
 	  }
+	  /*ルームページの背景*/
+	  #room-box{
+	  	position:fixed;
+		top: 20px;
+		width:500px;
+		height:	90%;
+		left:50%;
+		margin-left: -254px;
+		background-color: #ffffcc;
+		border-style:solid;
+		border-radius: 30px;
+		opacity:.9;
+	  }
+	  /*ルームページの外枠*/
+	  #room-box2{
+	  	position:fixed;
+		top: 20px;
+		width:500px;
+		height:	90%;
+		left:50%;
+		margin-left: -254px;
+		background-color: none;
+		border-style:solid;
+	  }
+	  /*ルーム１、ルーム２それぞれの背景*/
+	  .room-box3{
+	  	margin: 10px 30px 10px 30px;
+	  	padding: 1px 1px 0 0px;
+	  	height: 30%;
+	  	background-color: #f3f3c0;
+/*	  	border-radius: 15px;*/
+	  }
+
+	  .room{
+	  	margin:20px 0 20px 40px;
+	  	list-style-type: none;
+	  }
+	  .input{
+	  	appearance: none;
+	  	border: solid 1px #ccc;
+	  	border-radius: 4px;
+	  	box-shadow: inset 0 2px 3px grey;
+	  	height: 30px;
+	  	padding: 5px;
+	  }
+	  .OK-button{
+	  	appearance:none;
+	  	border:none;
+	  	background:#ff99cc;
+	  	height: 30px;
+	  	padding: 0 10px;
+	  	border-radius: 4px;
+	  	cursor: pointer;
+	  }
+	  .OK-button:hover{
+	  	background:#ff3399;
+	  }
 	
     </style>
   </head>
   <body>
-    <div class="box" id="mybox"></div>
-    <div class="box" id="enebox"></div>
-    <div class="ball" id="ball"></div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./socket.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      var socket = io();
-	  var player = 0;
-	  var FPS = 50;
-	  var movescale = 2;
+   <div class="box" id="mybox"></div>
+   <div class="box" id="enebox"></div>
+   <div class="ball" id="ball"></div>
+
+<!-- ルームページ -->
+   <div id='room-box'></div>
+   <div id='room-box2'>
+   		<h1>Welcome to the Tennis Game!<h1>
+   		<h3>Input your name and push "join" button.</h3>
+   		<div class="room-box3">
+	   		<li class='room'>
+	   			<p>room1</p>
+	   			<form id="form1" action="">
+	   				<input id="player1-1" class="input" type='text' placeholder='Your Name'>
+	   				<button class="OK-button">join</button>
+	   				<span>vs</span><span id="enemy-room1">no player</span>
+	   			</form>
+	   		</li>
+	   	</div>
+	   	<div class="room-box3">
+	   		<li class='room'>
+	   			<p>room2</p>
+	   			<form id="form2" action="">
+		   			<input id="player2-1" class="input" type='text' placeholder='Your Name'>
+		   			<button class="OK-button">join</button>
+	   				<span>vs</span><span id="enemy-room2">no player</span>
+	   			</form>
+	   		</li>
+	   	</div>
+   	</div>
+<!-- ルームページここまで -->
+
+   <script src="/socket.io/socket.io.js"></script>
+   <script src="./socket.js"></script>
+   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+   <script>
+    var socket = io();
+	var player = 0;
+	var FPS = 50;
+	var movescale = 2;
+
+	//ルーム内での動作に必要な変数
+    var room1_player=-1; //room1上で、player1なら1、player2なら2の値をとる。
+    var room2_player=-1; //room2上で、...
+    var jibun,teki; //自分と敵の名前を入れる
+    
+    //フォーム１が入力されたら
+    $('#form1').submit(function(){
+    	room1_player +=2;
+    	var player1 = $("#player1-1").val();
+    	if(room1_player==1){
+        	if(player1 == ""){ player1 = "player1"; }
+    	}else if(room1_player==2){
+    		if(player1 == ""){ player1 = "player2"; }
+    	}
+    	jibun=player1;
+    	// alert("your name:"+player1);
+    	socket.emit('join room1',player1);
+    	return false;
+    });
+    //フォーム2が入力されたら
+    
+
+    //「参加待ち画面」を表示
+    socket.on('waiting',function(player1,room){
+    	//alert("あなたは"+player1+"です。部屋はroom"+room+"です。");
+    	//$('#room-box2').append($('<li>').text("Hello World"));
+    	if(room1_player==1){
+	    	$("#room-box2").css({'margin-left':'-200%'});
+	    	$("#room-box").css({'margin-left':'-200%'});
+	    	$("body").append($('<div id="wait" class="room-box3">'));
+	    	$("#wait").append("<h1>Your name is <span style='color:#ff3300'>"+player1+"</span> in Room "+room+".</h1><h3>Serching for the other side player.</h3><h3>Please wait.</h3>");
+    	}
+    	//$("#wait").css({'margin-left':'0%'});
+    });
+
+    //"vs"以降の表示を変更
+    socket.on('show enemy name',function(player1){
+    	$('#enemy-room1').text(player1);
+    	teki=$('#enemy-room1').text();
+    	alert("player:"+teki);
+    	room1_player +=1;
+    })
+
+    //ゲームスタート
+    socket.on('game start',function(player2,room){
+    	//player1の動作
+    	if(room1_player==1){
+    		teki=player2;
+    		alert("私は"+jibun+". 敵は"+teki+"です。");
+    		$("#wait").empty();
+    		$("#wait").remove();
+    	}
+    	//player2の動作
+    	else if(room1_player==2){
+    		alert("私は"+jibun+". 敵は"+teki+"です。");
+    		$("#room-box2").css({'margin-left':'-200%'});
+	    	$("#room-box").css({'margin-left':'-200%'});
+    	}
+    });
+
 	  /* 相手のキー入力検知 */
      socket.on('keydown', function(msg,p){
 		 if(msg=="1"){
@@ -100,15 +265,19 @@
 	  	$('#mybox').css({'margin-left': '-=30px'});
 	  }
   }
+
+  window.onload = function(){
+   	var rad = Math.random() * 360;
+  	update(rad,100);
+   }
   
-  window.onload = function() {
-	  var rad = Math.random() * 360;
-	  update(rad);
-  }
-  
-  function update(rad){
+  function update(rad,n){
+  	if(n==0){
+  		console.log("完了");
+  	}else{
 	  socket.emit('update',rad)
-	  setTimeout(update, 1000/FPS,rad); //
+	  setTimeout(update, 1000/FPS,rad,n-1); //
+	}
   }
   
     </script>
