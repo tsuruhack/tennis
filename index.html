@@ -40,10 +40,12 @@
 	  #mybox{
 		  position:absolute;
 		  bottom:0%;
+		  left:50px;
 	  }
 	  #enebox{
 		  position:absolute;
 		  top:0%;
+		  left:50px;
 	  }
 	  .ball{
 		position:absolute;
@@ -150,179 +152,7 @@
 <!-- ルームページここまで -->
 
    <script src="/socket.io/socket.io.js"></script>
-   <script src="./socket.js"></script>
    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-   <script>
-    var socket = io();
-	var player = 0;
-	var FPS = 50;
-	var movescale = 2;
-
-	//ルーム内での動作に必要な変数
-    var room1_player=-1; //room1上で、player1なら1、player2なら2の値をとる。
-    var room2_player=-1; //room2上で、...
-    var jibun1,ibun2,teki1,teki2; //自分と敵の名前を入れる.数字は部屋番号
-    
-    //フォーム１が入力されたら
-    $('#form1').submit(function(){
-    	room1_player +=2;
-    	var player1 = $("#player1-1").val();
-    	if(room1_player==1){
-        	if(player1 == ""){ player1 = "player1"; }
-    	}else if(room1_player==2){
-    		if(player1 == ""){ player1 = "player2"; }
-    	}
-    	jibun1=player1;
-    	socket.emit('join room',player1,1);
-    	return false;
-    });
-    //フォーム2が入力されたら
-    $('#form2').submit(function(){
-    	room2_player +=2;
-    	var player2 = $("#player2-1").val();
-    	if(room2_player==1){
-        	if(player2 == ""){ player2 = "player1"; }
-    	}else if(room2_player==2){
-    		if(player2 == ""){ player2 = "player2"; }
-    	}
-    	jibun2=player2;
-    	socket.emit('join room',player2,2);
-    	return false;
-    });
-    
-
-    //「参加待ち画面」を表示
-    socket.on('waiting',function(player1,room){
-    	//alert("あなたは"+player1+"です。部屋はroom"+room+"です。");
-    	if((room1_player==1 &&room==1) || (room2_player==1 && room==2)){
-	    	$("#room-box2").css({'margin-left':'-200%'});
-	    	$("#room-box").css({'margin-left':'-200%'});
-	    	$("body").append($('<div id="wait" class="room-box3">'));
-	    	$("#wait").append("<h1>Your name is <span style='color:#ff3300'>"+player1+"</span> in Room "+room+".</h1><h3>Serching for the other side player.</h3><h3>Please wait.</h3>");
-    	}
-    });
-
-    //"vs"以降の表示を変更
-    socket.on('show enemy name',function(player1,room_number){
-    	if(room_number==1){
-	    	$('#enemy-room1').text(player1);
-	    	teki1=$('#enemy-room1').text();
-	    	//alert("player:"+teki1);
-	    	room1_player +=1;
-    	}else if(room_number==2){
-    		$('#enemy-room2').text(player1);
-	    	teki2=$('#enemy-room2').text();
-	    	//alert("player:"+teki2);
-	    	room2_player +=1;
-    	}
-    })
-    //vs以前の名前を変更
-	socket.on('show my name',function(jibun,room_number){
-		if(room_number==1){
-			$('#form1 input').remove();
-			$('#form1 button').remove();
-			$('#form1').prepend("<span>"+jibun+"</span>");
-		}else if(room_number==2){
-			$('#form2 input').remove();
-			$('#form2 button').remove();
-			$('#form2').prepend("<span>"+jibun+"</span>");
-		}
-	});
-
-    //ゲームスタート
-    socket.on('game start',function(player2,room){
-    	//player1 in room1の動作
-    	if(room1_player==1 && room==1){
-    		teki1=player2;
-    		alert("私は"+jibun1+". 敵は"+teki1+"です。");
-    		$("#wait").empty();
-    		$("#wait").remove();
-    	}
-    	//player2 in room1の動作
-    	else if(room1_player==2 && room==1){
-    		alert("私は"+jibun1+". 敵は"+teki1+"です。");
-    		$("#room-box2").css({'margin-left':'-200%'});
-	    	$("#room-box").css({'margin-left':'-200%'});
-	    	socket.emit('show my name',jibun1,room);
-    	}
-    	//player1 in room2の動作
-    	if(room2_player==1 && room==2){
-    		teki2=player2;
-    		alert("私は"+jibun2+". 敵は"+teki2+"です。");
-    		$("#wait").empty();
-    		$("#wait").remove();
-    	}
-    	//player2 in room2の動作
-    	else if(room2_player==2 && room==2){
-    		alert("私は"+jibun2+". 敵は"+teki2+"です。");
-    		$("#room-box2").css({'margin-left':'-200%'});
-	    	$("#room-box").css({'margin-left':'-200%'});
-	    	socket.emit('show my name',jibun2,room);
-    	}
-    });
-
-	  /* 相手のキー入力検知 */
-     socket.on('keydown', function(msg,p){
-		 if(msg=="1"){
-			 $('#enebox').css({'margin-left': '+=30px'});//相手機を動かす
-		 }else if(msg=="2"){
-			 $('#enebox').css({'margin-left': '-=30px'});
-		 }
-  	 });
-	 socket.on('user connected',function(p){
-		 player = p;
-	 });
-	 
-	 socket.on('update',function(rad){
-  	 	var ball = document.getElementById('ball');
-	 	var mybox = document.getElementById('mybox');
-	 	var enebox = document.getElementById('enebox');
-	 	var bl = ball.offsetLeft - 25;
-	 	var br = bl + 50;
-	 	var bt = ball.offsetTop + 25;
-	 	var bb = bt + 50;
-		var xmove = Math.cos(rad);
-		var ymove = Math.cos(rad);
-	 	$('#ball').css("margin-left","+="+ xmove*movescale+"px");
-	 	$('#ball').css("margin-top","+="+ ymove*movescale+"px");
-	  
-	 	if(bt <= 10){ //上端
-		 	if(enebox.offsetLeft <= br && bl <= (enebox.offsetLeft + enebox.offsetWidth)){//相手バーの枠内か
-				rad = (rad + 180)%360;
-		  	}
-	  	}else if(bb >= window.innerHeight - 10){//下端
-	  		if(mybox.offsetLeft <= br && bl <= (mybox.offsetLeft + enebox.offsetWidth)){
-				rad = (rad + 180)%360;
-		  	}
-	  	}
-	 });
-  
-  /* 自分のキー入力検知 */
-  document.onkeydown = Keydown;
-  function Keydown(){
-	  if(event.keyCode == 39){//→が押されたとき
-	  	socket.emit('keydown','1',player);//サーバーに送る
-	  	$('#mybox').css({'margin-left': '+=30px'});//自機を動かす
-	  }else if(event.keyCode == 37){//←が押されたとき
-	  socket.emit('keydown','2',player);
-	  	$('#mybox').css({'margin-left': '-=30px'});
-	  }
-  }
-
-  window.onload = function(){
-   	var rad = Math.random() * 360;
-  	update(rad,100);
-   }
-  
-  function update(rad,n){
-  	if(n==0){
-  		console.log("完了");
-  	}else{
-	  socket.emit('update',rad)
-	  setTimeout(update, 1000/FPS,rad,n-1); //
-	}
-  }
-  
-    </script>
+   <script src="./client.js"></script>
   </body>
 </html>
