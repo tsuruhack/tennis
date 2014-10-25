@@ -13,19 +13,39 @@
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
 	  */
+	  h1{
+	  	margin: 22px;
+	  	/*color: #0F0;*/
+	  }
+	  h3{
+	  	margin-left: 30px;
+	  	/*color: #0F0;*/
+	  }
+	  p{
+	  	font-size: 20px;
+	  	color: #ff3300;
+	  }
+	  span{
+	  	font-size: 20px;
+	  	font-family: "Yu Gothic";
+	  	margin: 10px;
+	  }
 	  div.box{
     	background-color:#0F0;
     	width:150px;
     	height:10px;
 		left:50%;
+		margin-left: -75px;
 	  }
 	  #mybox{
 		  position:absolute;
 		  bottom:0%;
+		  left:50px;
 	  }
 	  #enebox{
 		  position:absolute;
 		  top:0%;
+		  left:50px;
 	  }
 	  .ball{
 		position:absolute;
@@ -38,79 +58,101 @@
 		border-radius: 50%;
 		background-color: #6FF;/* 円の色 */
 	  }
+	  /*ルームページの背景*/
+	  #room-box{
+	  	position:fixed;
+		top: 20px;
+		width:500px;
+		height:	90%;
+		left:50%;
+		margin-left: -254px;
+		background-color: #ffffcc;
+		border-style:solid;
+		border-radius: 30px;
+		opacity:.9;
+	  }
+	  /*ルームページの外枠*/
+	  #room-box2{
+	  	position:fixed;
+		top: 20px;
+		width:500px;
+		height:	90%;
+		left:50%;
+		margin-left: -254px;
+		background-color: none;
+		border-style:solid;
+	  }
+	  /*ルーム１、ルーム２それぞれの背景*/
+	  .room-box3{
+	  	margin: 10px 30px 10px 30px;
+	  	padding: 1px 1px 0 0px;
+	  	height: 30%;
+	  	background-color: #f3f3c0;
+/*	  	border-radius: 15px;*/
+	  }
+
+	  .room{
+	  	margin:20px 0 20px 40px;
+	  	list-style-type: none;
+	  }
+	  .input{
+	  	appearance: none;
+	  	border: solid 1px #ccc;
+	  	border-radius: 4px;
+	  	box-shadow: inset 0 2px 3px grey;
+	  	height: 30px;
+	  	padding: 5px;
+	  }
+	  .OK-button{
+	  	appearance:none;
+	  	border:none;
+	  	background:#ff99cc;
+	  	height: 30px;
+	  	padding: 0 10px;
+	  	border-radius: 4px;
+	  	cursor: pointer;
+	  }
+	  .OK-button:hover{
+	  	background:#ff3399;
+	  }
 	
     </style>
   </head>
   <body>
-    <div class="box" id="mybox"></div>
-    <div class="box" id="enebox"></div>
-    <div class="ball" id="ball"></div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./socket.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      var socket = io();
-	  var player = 0;
-	  var FPS = 50;
-	  var movescale = 2;
-	  /* 相手のキー入力検知 */
-     socket.on('keydown', function(msg,p){
-		 if(msg=="1"){
-			 $('#enebox').css({'margin-left': '+=30px'});//相手機を動かす
-		 }else if(msg=="2"){
-			 $('#enebox').css({'margin-left': '-=30px'});
-		 }
-  	 });
-	 socket.on('user connected',function(p){
-		 player = p;
-	 });
-	 
-	 socket.on('update',function(rad){
-  	 	var ball = document.getElementById('ball');
-	 	var mybox = document.getElementById('mybox');
-	 	var enebox = document.getElementById('enebox');
-	 	var bl = ball.offsetLeft - 25;
-	 	var br = bl + 50;
-	 	var bt = ball.offsetTop + 25;
-	 	var bb = bt + 50;
-		var xmove = Math.cos(rad);
-		var ymove = Math.cos(rad);
-	 	$('#ball').css("margin-left","+="+ xmove*movescale+"px");
-	 	$('#ball').css("margin-top","+="+ ymove*movescale+"px");
-	  
-	 	if(bt <= 10){ //上端
-		 	if(enebox.offsetLeft <= br && bl <= (enebox.offsetLeft + enebox.offsetWidth)){//相手バーの枠内か
-				rad = (rad + 180)%360;
-		  	}
-	  	}else if(bb >= window.innerHeight - 10){//下端
-	  		if(mybox.offsetLeft <= br && bl <= (mybox.offsetLeft + enebox.offsetWidth)){
-				rad = (rad + 180)%360;
-		  	}
-	  	}
-	 });
-  
-  /* 自分のキー入力検知 */
-  document.onkeydown = Keydown;
-  function Keydown(){
-	  if(event.keyCode == 39){//→が押されたとき
-	  	socket.emit('keydown','1',player);//サーバーに送る
-	  	$('#mybox').css({'margin-left': '+=30px'});//自機を動かす
-	  }else if(event.keyCode == 37){//←が押されたとき
-	  socket.emit('keydown','2',player);
-	  	$('#mybox').css({'margin-left': '-=30px'});
-	  }
-  }
-  
-  window.onload = function() {
-	  var rad = Math.random() * 360;
-	  update(rad);
-  }
-  
-  function update(rad){
-	  socket.emit('update',rad)
-	  setTimeout(update, 1000/FPS,rad); //
-  }
-  
-    </script>
+   <div class="box" id="mybox"></div>
+   <div class="box" id="enebox"></div>
+   <div class="ball" id="ball"></div>
+
+<!-- ルームページ -->
+   <div id='room-box'></div>
+   <div id='room-box2'>
+   		<h1>Welcome to the Tennis Game!<h1>
+   		<h3>Input your name and push "join" button.</h3>
+   		<div class="room-box3">
+	   		<li class='room'>
+	   			<p>room1</p>
+	   			<form id="form1" action="">
+	   				<input id="player1-1" class="input" type='text' placeholder='Your Name'>
+	   				<button class="OK-button">join</button>
+	   				<span>vs</span><span id="enemy-room1">no player</span>
+	   			</form>
+	   		</li>
+	   	</div>
+	   	<div class="room-box3">
+	   		<li class='room'>
+	   			<p>room2</p>
+	   			<form id="form2" action="">
+		   			<input id="player2-1" class="input" type='text' placeholder='Your Name'>
+		   			<button class="OK-button">join</button>
+	   				<span>vs</span><span id="enemy-room2">no player</span>
+	   			</form>
+	   		</li>
+	   	</div>
+   	</div>
+<!-- ルームページここまで -->
+
+   <script src="/socket.io/socket.io.js"></script>
+   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+   <script src="./client.js"></script>
   </body>
 </html>
