@@ -2,29 +2,6 @@ var socket = io();
 var myplayernum = 0;
 var FPS = 60;
 var movescale = 2;
-var boardInfo = {//盤面状態の情報
-	player1:{
-		 ID:null,
-		 name:null,
-		 barPosition:0
-	},
-	player2:{
-		 ID:null,
-		 name:null,
-		 barPosition:0
-	},
-	ball:{
-		position:{
-			x:0,
-			y:0
-		},
-		move:{
-		    x:0,
-	  		y:0
-		}
-	}
-}
-
 //ルーム内での動作に必要な変数
 var room1_player=-1; //room1上で、player1なら1、player2なら2の値をとる。
 var room2_player=-1; //room2上で、...
@@ -147,12 +124,21 @@ socket.on('update',function(data){//サーバーから盤面情報が送られ�
   
   
   
-
-  
-  
-window.onload = function() {
-	//socket.idの処理をここでする必要があるかもしれない
+function windowCore(){
+        var moveX=0;
+        var moveY=0;
+        var resizeX=600;
+        var resizeY=450;
+        /* ウィンドウを絶対位置に移動 */
+        window.moveTo(moveX,moveY);
+        /* ウィンドウサイズを絶対サイズに変更 */
+        window.resizeTo(resizeX,resizeY);
 }
+
+    /* ウィンドウの読み込みが完了した時（ウィンドウがリロードされた時も） */
+window.onload=windowCore;
+    /* ウィンドウサイズが変更された時 */
+window.onresize=windowCore;    
   
 function gameroop(){//更新を要求
 	var key = CheckKeyKind();//押されてるキーの種類を判定する
@@ -161,17 +147,23 @@ function gameroop(){//更新を要求
 }
   
 function flush_board(data){//盤面の情報を更新
-	if(myplayernum==1){
- 		$("#mybox").css({'margin-left':data.player1.barPosition});
-	  	$("#enebox").css({'margin-left':data.player2.barPosition});
-	}else if(myplayernum==2){
-		$("#mybox").css({'margin-left':data.player2.barPosition});
-	  	$("#enebox").css({'margin-left':data.player1.barPosition});
-	}else{
-	  console.log("エラー：myplayernumが定義されていません");
-	}
+ 		$("#mybox").css({'bottom':data.player1.barPosition});
+ 		if(data.ball.isShot){
+ 			$("#ball").css({'bottom':data.ball.position.y, 'right':data.ball.position.x});
+ 		} else {
+ 		    $("#ball").css({'bottom':data.player1.barPosition});
+ 		}
+ 		if(data.window.gameover){
+ 			$("#ball").css({'right':20});
+ 			if(data.player1.gameWin){
+ 				alert(jibun1+"の勝ち！");
+ 			}
+ 			if(data.player2.gameWin){
+ 				alert(teki1+"の勝ち！");
+ 			}
+ 		}
+	  	$("#enebox").css({'bottom':data.player2.barPosition});
 }
-  
   
   
   
@@ -229,7 +221,7 @@ function KeyIsDown(key_code){
 function CheckKeyKind(){
 
 	// Ａキーが押されているか調べる
-	if(KeyIsDown(37)){
+	if(KeyIsDown(38)){
 		//console.log("←キーが押されている");
 		return 1;
 	}else{
@@ -237,9 +229,16 @@ function CheckKeyKind(){
 	}
 
 	// スペースキーが押されているか調べる
-	if(KeyIsDown(39)){
+	if(KeyIsDown(40)){
 		//console.log("→キーが押されている");
 		return 2;
+	}else{
+		//console.log("→キーが離されている");
+	}
+	
+	if(KeyIsDown(39)){
+		//console.log("→キーが押されている");
+		return 4;
 	}else{
 		//console.log("→キーが離されている");
 	}
