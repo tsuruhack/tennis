@@ -153,6 +153,15 @@ function flush_board(data){//盤面の情報を更新
  		} else {
  		    $("#ball").css({'bottom':data.player1.barPosition});
  		}
+ 		if(data.window.gameover){
+ 			$("#ball").css({'right':20});
+ 			if(data.player1.gameWin){
+ 				alert(jibun1+"の勝ち！");
+ 			}
+ 			if(data.player2.gameWin){
+ 				alert(teki1+"の勝ち！");
+ 			}
+ 		}
 	  	$("#enebox").css({'bottom':data.player2.barPosition});
 }
   
