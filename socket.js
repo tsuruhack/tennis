@@ -10,12 +10,14 @@ var boardInfo = {//盤面状態の情報
 		player1:{
 			 ID:null,
 			 name:null,
-			 barPosition:50
+			 barPosition:50,
+			 gameWin:false
 		},
 		player2:{
 			 ID:null,
 			 name:null,
-			 barPosition:50		 
+			 barPosition:50,		 
+			 gameWin:false
 		},
 		ball:{
 			position:{
@@ -30,7 +32,8 @@ var boardInfo = {//盤面状態の情報
 		},
 	    window:{
 		x:600,
-		y:500
+		y:500,
+		gameover:false
 	    }
 }
 
@@ -119,6 +122,9 @@ io.on('connection',function(socket){
 		  key_buffer[2] = key;
 	  }
 	  if(key_buffer[1] && key_buffer[2]){//お互いのプレイヤーの入力が確認できたら
+	  	if(boardInfo.window.gameover){
+	  		resetBoardInfo();
+	  	}
 	  	calc_boardInfo();//盤面情報を更新する
 	  	key_buffer = []; 
 		socket.emit('update',boardInfo);
@@ -129,6 +135,17 @@ io.on('connection',function(socket){
 http.listen(4000, function(){
   console.log('listening on *:4000');
 });
+
+function resetBoardInfo () {
+  boardInfo.ball.move.x = 5;
+  boardInfo.ball.move.y = 5;
+  boardInfo.ball.position.x = 0;
+  boardInfo.ball.position.y = boardInfo.player1.barPosition;
+  boardInfo.ball.isShot = false;
+  boardInfo.window.gameover = false;
+  boardInfo.player1.gameWin = false;
+  boardInfo.player2.gameWin = false;
+}
 
 function calc_boardInfo(){
 	if(key_buffer[1] == 1){//プレイヤー１のボードが上に
@@ -188,14 +205,21 @@ function isReflectX () {
   	&& boardInfo.ball.position.y <= boardInfo.player2.barPosition + 80){
   	return true;
   }
-  console.log(boardInfo.ball.position.y);
-  console.log(boardInfo.player2.barPosition);
+  if(boardInfo.ball.position.x >= boardInfo.window.x){
+  	boardInfo.window.gameover = true;
+  	boardInfo.player1.gameWin = true;
+  }
   //player1 "
   if(boardInfo.ball.position.x < 0
-  	&& boardInfo.ball.position.x > 20
+  	&& boardInfo.ball.position.x > -20
   	&& boardInfo.ball.position.y >= boardInfo.player1.barPosition
   	&& boardInfo.ball.position.y <= boardInfo.player1.barPosition + 80){
   	return true;
   }
+  if(boardInfo.ball.position.x < -20){
+  	boardInfo.window.gameover = true;
+  	boardInfo.player2.gameWin = true;
+  }
+  console.log(boardInfo.window.gameover);
   return false;
 }
