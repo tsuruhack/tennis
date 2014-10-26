@@ -220,6 +220,5 @@ function isReflectX () {
   	boardInfo.window.gameover = true;
   	boardInfo.player2.gameWin = true;
   }
-  console.log(boardInfo.window.gameover);
   return false;
 }

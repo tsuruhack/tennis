@@ -55,6 +55,22 @@
 		border-radius: 50%;
 		background-color: #FFD700;/* 円の色 */
 	  }
+	  .boarder{
+		position:absolute;
+		bottom:580px;
+		right:0px;
+		width: 622px;
+		height: 2px;
+		background-color: #000000;
+	  }
+	  .boarderTate{
+	  	position:absolute;
+		bottom:0px;
+		right:622px;
+		width: 2px;
+		height: 582px;
+		background-color: #000000;
+	  }
 	  /*ルームページの背景*/
 	  #room-box{
 	  	position:fixed;
@@ -87,7 +103,6 @@
 	  	background-color: #f3f3c0;
 /*	  	border-radius: 15px;*/
 	  }
-
 	  .room{
 	  	margin:20px 0 20px 40px;
 	  	list-style-type: none;
@@ -119,6 +134,8 @@
    <div class="box" id="mybox"></div>
    <div class="box" id="enebox"></div>
    <div class="ball" id="ball"></div>
+   <div class="boarder" id="boarder"></div>
+   <div class="boarderTate" id="boarderTate"></div>
 
 <!-- ルームページ -->
    <div id='room-box'></div>
