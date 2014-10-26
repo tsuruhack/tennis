@@ -118,18 +118,24 @@
 	  
 	  /* タイトル画面用 */
 	  .gamemode{
+		position:relative;
 	  	appearance:none;
 	  	border:none;
-	  	background:#ff99cc;
-	  	height: 50px;
-	  	padding: 0 10px;
+		text-align::center;
+		font-size:24px;
+		background:#ff99cc;
+		height:40px;
+		left:30px;
+	  	padding: 10px 10px;
+		margin:10px 10px;
 	  	border-radius: 4px;
 	  	cursor: pointer;
 	  }
 	  #online-mode{
-		  top:
+		  
 	  }
 	  #1P-mode{
+		  
 	  }
 	  #2P-mode{
 	  }
@@ -154,10 +160,10 @@
    		<h1>Welcome to the Tennis Game!<h1>
    		<h3>Choose game mode</h3>
         <!--タイトル画面のボタン追記  -->
-        <p><input button id="online-mode" class="gamemode" onClick="gamemode(1)" value="online"></p>
-        <p><input button id="1P-mode" class="gamemode" onClick="gamemode(2)" value="VS CPU"></p>
-        <p><input button id="2P-mode" class="gamemode" onClick="gamemode(3)" value="VS 2P"></p>
-        <p><input button id="ranking" class="gamemode" onClick"gamemode(4)" value="ranking"></p>    
+        <p><input button id="online-mode" class="gamemode" onClick="gamemode(1)" value="online" readonly="readonly"></p>
+        <p><input button id="1P-mode" class="gamemode" onClick="gamemode(2)" value="VS CPU" readonly="readonly"></p>
+        <p><input button id="2P-mode" class="gamemode" onClick="gamemode(3)" value="VS 2P" readonly="readonly"></p>
+        <p><input button id="ranking" class="gamemode" onClick="gamemode(4)" value="ranking" readonly="readonly"></p>    
         <div id="roomquery">
         
 		</div>

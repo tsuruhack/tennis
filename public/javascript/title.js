@@ -1,7 +1,10 @@
 /* タイトルでの処理に使うhtml */
 function gamemode(mode){
+	if(mode!=1){
+		alert("準備中…");
+	}else{
 	
-	/*説明テキストの変更s*/
+	/*説明テキストの変更*/
 	$("h3").text('Input your name and push "join" button.');
 	/* ゲームモード選択ボタンを削除する */
 	$(".gamemode").empty();
@@ -18,7 +21,7 @@ function gamemode(mode){
 	$("#room1").append($('<p>room1</p><form id="form1" action=""><input id="player1-1" class="input" type="text" placeholder="Your Name"><button class="OK-button">join</button><span>vs</span><span id="enemy-room1">no player</span></form>'));
 	
 	*/
-	
+	}
 }
 
 	   					
