@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var isPlayer1 = 0;	//プレイヤー1が接続しているかどうか
@@ -19,14 +20,19 @@ var boardInfo = {//盤面状態の情報
 		ball:{
 			position:{
 				x:0,
-				y:0
+				y:50
 			},
 			move:{
-			    x:0,
-		  		y:0
-			}
-		}
-	}
+			    x:5,
+		  		y:5
+			},
+			isShot:false
+		},
+	    window:{
+		x:600,
+		y:500
+	    }
+}
 
 
 //ルーム内での動作に必要な変数
@@ -41,6 +47,7 @@ app.get('/client.js', function(req, res) {
     res.sendfile('./client.js');
 });
 
+app.use(express.static('./stick.jpg'));
 app.get('/keyInput.js', function(req, res) {
     res.sendfile('./keyInput.js');
 });
@@ -104,12 +111,6 @@ io.on('connection',function(socket){
     console.log('user disconnected');
   });
   
-  /* キーが押されたとき */
-  socket.on('keydown', function(msg,p){
-    console.log(player + 'p keydown: ' + msg);
-    socket.broadcast.emit('keydown', msg,p);  
-  });
-  
   /* ボールを動かす */
   socket.on('update',function(key,playernum){
 	  if(playernum==1){//プレイヤー１のキー入力情報
@@ -129,16 +130,72 @@ http.listen(4000, function(){
   console.log('listening on *:4000');
 });
 
-
 function calc_boardInfo(){
-	if(key_buffer[1] == 1){//プレイヤー１のボードが左に
-		boardInfo.player1.barPosition -= 3;
-	}else if(key_buffer[1] == 2){//プレイヤー１のボードが右に
-		boardInfo.player1.barPosition += 3;
+	if(key_buffer[1] == 1){//プレイヤー１のボードが上に
+		if(boardInfo.player1.barPosition < boardInfo.window.y){
+		boardInfo.player1.barPosition += 5;
+		}
+	}else if(key_buffer[1] == 2){//プレイヤー１のボードが下に
+		if(boardInfo.player1.barPosition > 0){
+		boardInfo.player1.barPosition -= 5;
+		}
 	}
-	if(key_buffer[2] == 1){//プレイヤー２のボードが左に
-		boardInfo.player2.barPosition -= 3;
-	}else if(key_buffer[2] == 2){//プレイヤー２のボードが右に
-		boardInfo.player2.barPosition += 3;
+	if(key_buffer[2] == 1){//プレイヤー２のボードが上に
+        if(boardInfo.player2.barPosition < boardInfo.window.y){
+	    boardInfo.player2.barPosition += 5;
+	    }
+	}else if(key_buffer[2] == 2){//プレイヤー２のボードが下に
+		if(boardInfo.player2.barPosition > 0){
+	    boardInfo.player2.barPosition -= 5;
+	 }
 	}
+	if(key_buffer[1] == 4){
+		boardInfo.ball.isShot = true;
+	}
+	moveBall();
+}
+
+function moveBall () {
+	if(boardInfo.ball.isShot){
+		if(isReflectX()){
+			boardInfo.ball.move.x *= -1;
+		}
+		if(isReflectY()){
+			boardInfo.ball.move.y *= -1;
+		}
+	boardInfo.ball.position.x += boardInfo.ball.move.x;
+	boardInfo.ball.position.y += boardInfo.ball.move.y;
+	} else {
+		boardInfo.ball.position.y = boardInfo.player1.barPosition;
+	}
+}
+
+function isReflectY () {
+  if(boardInfo.ball.position.y > boardInfo.window.y){
+  	return true;
+  }
+  if(boardInfo.ball.position.y < 0){
+  	return true;
+  }
+  return false;
+}
+
+function isReflectX () {
+  //player2に当たっているかの判定
+  if(boardInfo.ball.position.x > boardInfo.window.x - 20
+  	&& boardInfo.ball.position.x < boardInfo.window.x
+  	&& boardInfo.ball.position.y >= boardInfo.player2.barPosition
+  	&& boardInfo.ball.position.y <= boardInfo.player2.barPosition + 80){
+  	return true;
+  }
+  console.log(boardInfo.ball.position.y);
+  console.log(boardInfo.player2.barPosition);
+  //player1 "
+  if(boardInfo.ball.position.x < 0
+  	&& boardInfo.ball.position.x > 20
+  	&& boardInfo.ball.position.y >= boardInfo.player1.barPosition
+  	&& boardInfo.ball.position.y <= boardInfo.player1.barPosition + 80){
+  	return true;
+  }
+  return false;
 }
