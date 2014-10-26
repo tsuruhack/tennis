@@ -154,6 +154,7 @@ function calc_boardInfo(){
 		if(boardInfo.player1.barPosition > 0){
 		boardInfo.player1.barPosition -= 5;
 		}
+
 	}
 	if(key_buffer[2] == 1){//プレイヤー２のボードが上に
         if(boardInfo.player2.barPosition < boardInfo.window.y){
