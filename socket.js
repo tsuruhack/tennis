@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var isPlayer1 = 0;	//プレイヤー1が接続しているかどうか
@@ -43,17 +44,14 @@ var boardInfo = {//盤面状態の情報
   var room2=0; //room2の参加人数
 
 app.get('/', function(req, res){
-  res.sendfile('index.html');
+  res.sendfile('title.html');
 });
 
 app.get('/client.js', function(req, res) {
     res.sendfile('./client.js');
 });
-
-app.use(express.static('./stick.jpg'));
-app.get('/keyInput.js', function(req, res) {
-    res.sendfile('./keyInput.js');
-});
+app.use(express.static(path.join(__dirname, 'public/img')));
+app.use(express.static(path.join(__dirname, 'public/javascript')));
 
 io.emit('some event', {for: 'everyone'});
 
@@ -156,6 +154,7 @@ function calc_boardInfo(){
 		if(boardInfo.player1.barPosition > 0){
 		boardInfo.player1.barPosition -= 5;
 		}
+
 	}
 	if(key_buffer[2] == 1){//プレイヤー２のボードが上に
         if(boardInfo.player2.barPosition < boardInfo.window.y){
