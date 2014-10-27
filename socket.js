@@ -12,13 +12,15 @@ var boardInfo = {//盤面状態の情報
 			 ID:null,
 			 name:null,
 			 barPosition:50,
-			 gameWin:false
+			 gameWin:false,
+			 point:0
 		},
 		player2:{
 			 ID:null,
 			 name:null,
 			 barPosition:50,		 
-			 gameWin:false
+			 gameWin:false,
+			 point:0
 		},
 		ball:{
 			position:{
@@ -50,6 +52,7 @@ app.get('/', function(req, res){
 app.get('/client.js', function(req, res) {
     res.sendfile('./client.js');
 });
+
 app.use(express.static(path.join(__dirname, 'public/img')));
 app.use(express.static(path.join(__dirname, 'public/javascript')));
 
@@ -207,6 +210,7 @@ function isReflectX () {
   if(boardInfo.ball.position.x >= boardInfo.window.x){
   	boardInfo.window.gameover = true;
   	boardInfo.player1.gameWin = true;
+	boardInfo.player1.point++;
   }
   //player1 "
   if(boardInfo.ball.position.x < 0
@@ -218,6 +222,7 @@ function isReflectX () {
   if(boardInfo.ball.position.x < -20){
   	boardInfo.window.gameover = true;
   	boardInfo.player2.gameWin = true;
+	boardInfo.player2.point++;
   }
   return false;
 }

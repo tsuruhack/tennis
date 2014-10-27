@@ -1,5 +1,4 @@
 var socket = io();
-var myplayernum = 0;
 var FPS = 60;
 var movescale = 2;
 //ルーム内での動作に必要な変数
@@ -8,6 +7,8 @@ var room2_player=-1; //room2上で、...
 var jibun1,jibun2,teki1,teki2; //自分と敵の名前を入れる.数字は部屋番号
 //for room1_player 自分：jibun1 相手：teki1
 //for room2_player 相手：jibun2 自分：teki2
+var myplayernum = 0;//自分のプレイヤー番号
+var myroom = 0;//ルーム番号
 	
 //フォーム１が入力されたら
 $('#form1').submit(function(){
@@ -82,6 +83,7 @@ socket.on('game start',function(player2,room){
    	if(room1_player==1 && room==1){
    		teki1=player2;
 		myplayernum = 1;
+		myroom = 1;
    		alert("私は"+jibun1+". 敵は"+teki1+"です。");
    		$("#wait").empty();
    		$("#wait").remove();
@@ -89,6 +91,7 @@ socket.on('game start',function(player2,room){
   	//player2 in room1の動作
    	else if(room1_player==2 && room==1){
 		myplayernum = 2;
+		myroom = 1;
    		alert("私は"+jibun1+". 敵は"+teki1+"です。");
   		$("#room-box2").css({'margin-left':'-200%'});
     	$("#room-box").css({'margin-left':'-200%'});
@@ -98,6 +101,7 @@ socket.on('game start',function(player2,room){
    	if(room2_player==1 && room==2){
    		teki2=player2;
 		myplayernum = 1;
+		myroom = 2;
     	alert("私は"+jibun2+". 敵は"+teki2+"です。");
     	$("#wait").empty();
     	$("#wait").remove();
@@ -105,11 +109,16 @@ socket.on('game start',function(player2,room){
    	//player2 in room2の動作
    	else if(room2_player==2 && room==2){
 		myplayernum = 2;
+		myroom = 2;
     	alert("私は"+jibun2+". 敵は"+teki2+"です。");
     	$("#room-box2").css({'margin-left':'-200%'});
 	   	$("#room-box").css({'margin-left':'-200%'});
 	   	socket.emit('show my name',jibun2,room);
     }
+	
+	/* 得点盤挿入 */
+	$('#point-box').css({'background-color':'#ff6600','border-style':'solid'});
+	$('#point-box').text("0-0");
 	
 	gameroop();
 		
@@ -155,13 +164,24 @@ function flush_board(data){//盤面の情報を更新
  		    $("#ball").css({'bottom':data.player1.barPosition});
  		}
  		if(data.window.gameover){
+			console.log("1P:" + data.player1.gameWin);
+			console.log("2P:" + data.player2.gameWin);
  			$("#ball").css({'right':20});
  			if(data.player1.gameWin){
- 				alert(jibun1+"の勝ち！");
+				if(myroom==1){
+ 					alert(jibun1+"の勝ち！\n" + data.player2.point + "-" + data.player1.point);
+				}else if(myroom==2){
+					alert(jibun2+"の勝ち！\n" + data.player2.point + "-" + data.player1.point);
+				}
  			}
  			if(data.player2.gameWin){
- 				alert(teki1+"の勝ち！");
+				if (myroom==1){
+ 					alert(teki1+"の勝ち！\n" + data.player2.point + "-" + data.player1.point);
+				}else if(myroom==2){
+					alert(teki2+"の勝ち！\n" + data.player2.point + "-" + data.player1.point);
+				}
  			}
+			$("#point-box").text(data.player2.point + "-" + data.player1.point);
  		}
 	  	$("#enebox").css({'bottom':data.player2.barPosition});
 }

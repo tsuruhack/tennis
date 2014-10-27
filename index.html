@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Online Tennis</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; background:#00ff00}
@@ -71,6 +71,16 @@
 		height: 582px;
 		background-color: #000000;
 	  }
+	  #point-box{
+		  position:absolute;
+		  bottom:620px;
+		  right:350px;
+		  height:60px;
+		  width:100px;
+		  text-align:center;
+		  line-height:50px;
+		  font-size:30px;
+	  }
 	  /*ルームページの背景*/
 	  #room-box{
 	  	position:fixed;
@@ -127,7 +137,6 @@
 	  .OK-button:hover{
 	  	background:#ff3399;
 	  }
-	  
 	  /* タイトル画面用 */
 	  .gamemode{
 		position:relative;
@@ -158,7 +167,6 @@
     
    <script src="/socket.io/socket.io.js"></script>
    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-   <script src="client.js"></script>
    <script src="./title.js"></script>
     
   </head>
@@ -168,20 +176,20 @@
    <div class="ball" id="ball"></div>
    <div class="boarder" id="boarder"></div>
    <div class="boarderTate" id="boarderTate"></div>
+   <div id="point-box"></div>
 
 <!-- ルームページ -->
    <div id='room-box'></div>
    <div id='room-box2'>
    		<h1>Welcome to the Tennis Game!<h1>
    		<h3>Choose game mode.</h3>
-        <!--タイトル画面のボタン追記  -->
-        <p><input button id="online-mode" class="gamemode" onClick="gamemode(1)" value="online" readonly></p>
-        <p><input button id="1P-mode" class="gamemode" onClick="gamemode(2)" value="VS CPU" readonly></p>
-        <p><input button id="2P-mode" class="gamemode" onClick="gamemode(3)" value="VS 2P" readonly></p>
-        <p><input button id="ranking" class="gamemode" onClick="gamemode(4)" value="ranking" readonly></p>    
+   		<p><input button id="online-mode" class="gamemode" onClick="gamemode(1)" value="online" readonly="readonly"></p>
+        <p><input button id="1P-mode" class="gamemode" onClick="gamemode(2)" value="VS CPU" readonly="readonly"></p>
+        <p><input button id="2P-mode" class="gamemode" onClick="gamemode(3)" value="VS 2P" readonly="readonly"></p>
+        <p><input button id="ranking" class="gamemode" onClick="gamemode(4)" value="ranking" readonly="readonly"></p>    
         <div id="roomquery">
-        
-		</div>
+        <!--ゲームモード選択の後ここにルームページのフォームが挿入される-->
+        </div>
    	</div>
 <!-- ルームページここまで -->
   </body>
