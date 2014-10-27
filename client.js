@@ -11,6 +11,7 @@ var jibun1,jibun2,teki1,teki2; //自分と敵の名前を入れる.数字は部�
 	
 //フォーム１が入力されたら
 $('#form1').submit(function(){
+	console.log("abc");
 	room1_player +=2;
     var player1 = $("#player1-1").val();
     if(room1_player==1){

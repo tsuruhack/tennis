@@ -44,7 +44,7 @@ var boardInfo = {//盤面状態の情報
   var room2=0; //room2の参加人数
 
 app.get('/', function(req, res){
-  res.sendfile('title.html');
+  res.sendfile('index.html');
 });
 
 app.get('/client.js', function(req, res) {
