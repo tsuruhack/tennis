@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var isPlayer1 = 0;	//プレイヤー1が接続しているかどうか
@@ -11,13 +12,15 @@ var boardInfo = {//盤面状態の情報
 			 ID:null,
 			 name:null,
 			 barPosition:50,
-			 gameWin:false
+			 gameWin:false,
+			 point:0
 		},
 		player2:{
 			 ID:null,
 			 name:null,
 			 barPosition:50,		 
-			 gameWin:false
+			 gameWin:false,
+			 point:0
 		},
 		ball:{
 			position:{
@@ -50,10 +53,9 @@ app.get('/client.js', function(req, res) {
     res.sendfile('./client.js');
 });
 
-app.use(express.static('./stick.jpg'));
-app.get('/keyInput.js', function(req, res) {
-    res.sendfile('./keyInput.js');
-});
+app.use(express.static(path.join(__dirname, 'public/img')));
+app.use(express.static(path.join(__dirname, 'public/javascript')));
+
 
 io.emit('some event', {for: 'everyone'});
 
@@ -208,6 +210,7 @@ function isReflectX () {
   if(boardInfo.ball.position.x >= boardInfo.window.x){
   	boardInfo.window.gameover = true;
   	boardInfo.player1.gameWin = true;
+	boardInfo.player1.point++;
   }
   //player1 "
   if(boardInfo.ball.position.x < 0
@@ -219,7 +222,7 @@ function isReflectX () {
   if(boardInfo.ball.position.x < -20){
   	boardInfo.window.gameover = true;
   	boardInfo.player2.gameWin = true;
-  }
-  console.log(boardInfo.window.gameover);
+	boardInfo.player2.point++;
+	}
   return false;
 }

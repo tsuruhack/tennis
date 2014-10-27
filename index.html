@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Online Tennis</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; background:#00ff00}
@@ -54,6 +54,32 @@
 		-moz-border-radius: 50%;
 		border-radius: 50%;
 		background-color: #FFD700;/* 円の色 */
+	  }
+	  .boarder{
+		position:absolute;
+		bottom:580px;
+		right:0px;
+		width: 622px;
+		height: 2px;
+		background-color: #000000;
+	  }
+	  .boarderTate{
+	  	position:absolute;
+		bottom:0px;
+		right:622px;
+		width: 2px;
+		height: 582px;
+		background-color: #000000;
+	  }
+	  #point-box{
+		  position:absolute;
+		  bottom:620px;
+		  right:350px;
+		  height:60px;
+		  width:100px;
+		  text-align:center;
+		  line-height:50px;
+		  font-size:30px;
 	  }
 	  /*ルームページの背景*/
 	  #room-box{
@@ -112,44 +138,61 @@
 	  .OK-button:hover{
 	  	background:#ff3399;
 	  }
+	  /* タイトル画面用 */
+	  .gamemode{
+		position:relative;
+	  	appearance:none;
+	  	border:none;
+		text-align::center;
+		font-size:24px;
+		background:#ff99cc;
+		height:40px;
+		left:30px;
+	  	padding: 10px 10px;
+		margin:10px 10px;
+	  	border-radius: 4px;
+	  	cursor: pointer;
+	  }
+	  #online-mode{
+		  
+	  }
+	  #1P-mode{
+		  
+	  }
+	  #2P-mode{
+	  }
+	  #ranking{
+	  }
+	  
 	
     </style>
+    
+   <script src="/socket.io/socket.io.js"></script>
+   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+   <script src="./title.js"></script>
+    
   </head>
   <body>
    <div class="box" id="mybox"></div>
    <div class="box" id="enebox"></div>
    <div class="ball" id="ball"></div>
+   <div class="boarder" id="boarder"></div>
+   <div class="boarderTate" id="boarderTate"></div>
+   <div id="point-box"></div>
 
 <!-- ルームページ -->
    <div id='room-box'></div>
    <div id='room-box2'>
    		<h1>Welcome to the Tennis Game!<h1>
-   		<h3>Input your name and push "join" button.</h3>
-   		<div class="room-box3">
-	   		<li class='room'>
-	   			<p>room1</p>
-	   			<form id="form1" action="">
-	   				<input id="player1-1" class="input" type='text' placeholder='Your Name'>
-	   				<button class="OK-button">join</button>
-	   				<span>vs</span><span id="enemy-room1">no player</span>
-	   			</form>
-	   		</li>
-	   	</div>
-	   	<div class="room-box3">
-	   		<li class='room'>
-	   			<p>room2</p>
-	   			<form id="form2" action="">
-		   			<input id="player2-1" class="input" type='text' placeholder='Your Name'>
-		   			<button class="OK-button">join</button>
-	   				<span>vs</span><span id="enemy-room2">no player</span>
-	   			</form>
-	   		</li>
-	   	</div>
+   		<h3>Choose game mode.</h3>
+   		<p><input button id="online-mode" class="gamemode" onClick="gamemode(1)" value="online" readonly="readonly"></p>
+        <p><input button id="1P-mode" class="gamemode" onClick="gamemode(2)" value="VS CPU" readonly="readonly"></p>
+        <p><input button id="2P-mode" class="gamemode" onClick="gamemode(3)" value="VS 2P" readonly="readonly"></p>
+        <p><input button id="ranking" class="gamemode" onClick="gamemode(4)" value="ranking" readonly="readonly"></p>    
+        <div id="roomquery">
+        <!--ゲームモード選択の後ここにルームページのフォームが挿入される-->
+        </div>
    	</div>
 <!-- ルームページここまで -->
-
-   <script src="/socket.io/socket.io.js"></script>
-   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-   <script src="./client.js"></script>
   </body>
 </html>
