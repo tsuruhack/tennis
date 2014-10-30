@@ -2,6 +2,7 @@ var socket = io();
 var FPS = 60;
 var movescale = 2;
 //ルーム内での動作に必要な変数
+var come=0;
 var room1_player=-1; //room1上で、player1なら1、player2なら2の値をとる。
 var room2_player=-1; //room2上で、...
 var jibun1,jibun2,teki1,teki2; //自分と敵の名前を入れる.数字は部屋番号
@@ -48,6 +49,32 @@ socket.on('waiting',function(player1,room){
 	   	$("body").append($('<div id="wait" class="room-box3">'));
 	   	$("#wait").append("<h1>Your name is <span style='color:#ff3300'>"+player1+"</span> in Room "+room+".</h1><h3>Serching for the other side player.</h3><h3>Please wait.</h3>");
     }
+});
+
+//
+socket.on('user connected',function(room1,room2,ple11,ple12,ple21,ple22){
+	if(come==0){
+		room1_player=room1;
+		room2_player=room2;
+		if(room1 != 2) room1_player -= 1;
+		if(room2 != 2) room2_player -= 1;
+		//alert("room1:"+room1+"\nroom2:"+room2);
+	}
+	if(room1 >= 1) $('#enemy-room1').text(ple11);
+	if(room1 >= 2){
+		$('#form1 input').remove();
+		$('#form1 button').remove();
+		$('#form1').prepend("<span>"+ple12+"</span>");
+	}
+	if(room2 >= 1) $('#enemy-room2').text(ple21);
+	if(room2 >= 2){
+		$('#form2 input').remove();
+		$('#form2 button').remove();
+		$('#form2').prepend("<span>"+ple22+"</span>");
+	}
+	teki1=ple11;
+	teki2=ple21;
+	come=1;
 });
 
 //"vs"以降の表示を変更
