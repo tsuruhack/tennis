@@ -200,7 +200,6 @@ function isReflectX () {
   	&& boardInfo.ball.position.x < boardInfo.window.x
   	&& boardInfo.ball.position.y >= boardInfo.player2.barPosition - 10
   	&& boardInfo.ball.position.y <= boardInfo.player2.barPosition + 70){
-  		hitSound.play();
   	return true;
   }
   if(boardInfo.ball.position.x >= boardInfo.window.x){
@@ -213,7 +212,6 @@ function isReflectX () {
   	&& boardInfo.ball.position.x > 230
   	&& boardInfo.ball.position.y >= boardInfo.player1.barPosition - 10
   	&& boardInfo.ball.position.y <= boardInfo.player1.barPosition + 70){
-  		hitSound.play();
   	return true;
   }
   if(boardInfo.ball.position.x < 230){

@@ -193,8 +193,6 @@ function flush_board(data){//盤面の情報を更新
 			$("#point-box").text(data.player2.point + "-" + data.player1.point);
  		}
 	  	$("#enebox").css({'bottom':data.player2.barPosition});
-	  	if(data.ball.isHitSound){
-	  	}
 }
   
   
