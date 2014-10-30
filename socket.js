@@ -190,7 +190,7 @@ function moveBall () {
 }
 
 function isReflectY () {
-  if(boardInfo.ball.position.y > boardInfo.window.y){
+  if(boardInfo.ball.position.y > boardInfo.window.y + 25){
   	return true;
   }
   if(boardInfo.ball.position.y < 0){
