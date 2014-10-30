@@ -24,17 +24,18 @@ var boardInfo = {//盤面状態の情報
 		},
 		ball:{
 			position:{
-				x:0,
+				x:250,
 				y:50
 			},
 			move:{
 			    x:5,
 		  		y:5
 			},
-			isShot:false
+			isShot:false,
+			isHitSound:false
 		},
 	    window:{
-		x:600,
+		x:850,
 		y:500,
 		gameover:false
 	    }
@@ -54,6 +55,7 @@ app.get('/client.js', function(req, res) {
 });
 
 app.use(express.static(path.join(__dirname, 'public/img')));
+app.use(express.static(path.join(__dirname, 'public/mp3')));
 app.use(express.static(path.join(__dirname, 'public/javascript')));
 
 io.emit('some event', {for: 'everyone'});
@@ -140,8 +142,8 @@ http.listen(4000, function(){
 function resetBoardInfo () {
   boardInfo.ball.move.x = 5;
   boardInfo.ball.move.y = 5;
-  boardInfo.ball.position.x = 0;
-  boardInfo.ball.position.y = boardInfo.player1.barPosition;
+  boardInfo.ball.position.x = 250;
+  boardInfo.ball.position.y = boardInfo.player1.barPosition + 10;
   boardInfo.ball.isShot = false;
   boardInfo.window.gameover = false;
   boardInfo.player1.gameWin = false;
@@ -187,6 +189,7 @@ function moveBall () {
 	} else {
 		boardInfo.ball.position.y = boardInfo.player1.barPosition;
 	}
+	boardInfo.ball.isHitSound = isReflectX();
 }
 
 function isReflectY () {
@@ -203,8 +206,9 @@ function isReflectX () {
   //player2に当たっているかの判定
   if(boardInfo.ball.position.x > boardInfo.window.x - 20
   	&& boardInfo.ball.position.x < boardInfo.window.x
-  	&& boardInfo.ball.position.y >= boardInfo.player2.barPosition
-  	&& boardInfo.ball.position.y <= boardInfo.player2.barPosition + 80){
+  	&& boardInfo.ball.position.y >= boardInfo.player2.barPosition - 10
+  	&& boardInfo.ball.position.y <= boardInfo.player2.barPosition + 70){
+  		hitSound.play();
   	return true;
   }
   if(boardInfo.ball.position.x >= boardInfo.window.x){
@@ -213,13 +217,14 @@ function isReflectX () {
 	boardInfo.player1.point++;
   }
   //player1 "
-  if(boardInfo.ball.position.x < 0
-  	&& boardInfo.ball.position.x > -20
-  	&& boardInfo.ball.position.y >= boardInfo.player1.barPosition
-  	&& boardInfo.ball.position.y <= boardInfo.player1.barPosition + 80){
+  if(boardInfo.ball.position.x < 250
+  	&& boardInfo.ball.position.x > 230
+  	&& boardInfo.ball.position.y >= boardInfo.player1.barPosition - 10
+  	&& boardInfo.ball.position.y <= boardInfo.player1.barPosition + 70){
+  		hitSound.play();
   	return true;
   }
-  if(boardInfo.ball.position.x < -20){
+  if(boardInfo.ball.position.x < 230){
   	boardInfo.window.gameover = true;
   	boardInfo.player2.gameWin = true;
 	boardInfo.player2.point++;
