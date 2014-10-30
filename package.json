@@ -1,6 +1,6 @@
 {
   "name": "online-tennis-game",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "tsuruhack first app",
   "dependencies": {
     "express": "~4.9.7",
