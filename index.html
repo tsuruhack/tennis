@@ -38,16 +38,16 @@
 	  }
 	  #mybox{
 		  position:absolute;
-		  right:0%;
+		  right:250px;
 	  }
 	  #enebox{
 		  position:absolute;
-		  right:600px;
+		  right:850px;
 	  }
 	  .ball{
 		position:absolute;
 		bottom:54%;
-		right:20px;
+		right:270px;
 		width: 40px;
 		height: 40px;
 		-webkit-border-radius: 50%;/* 50%でもOK */
@@ -58,7 +58,7 @@
 	  .boarder{
 		position:absolute;
 		bottom:580px;
-		right:0px;
+		right:250px;
 		width: 622px;
 		height: 2px;
 		background-color: #000000;
@@ -66,10 +66,15 @@
 	  .boarderTate{
 	  	position:absolute;
 		bottom:0px;
-		right:622px;
 		width: 2px;
 		height: 582px;
 		background-color: #000000;
+	  }
+	  #boarderLeft{
+		right:872px;
+	  }
+	  #boarderRight{
+	  	right: 250px;
 	  }
 	  #point-box{
 		  position:absolute;
@@ -171,11 +176,13 @@
     
   </head>
   <body>
+   <embed id="sound1" src="./hitSound.mp3" height="0" width="0" autostart="false">
    <div class="box" id="mybox"></div>
    <div class="box" id="enebox"></div>
    <div class="ball" id="ball"></div>
    <div class="boarder" id="boarder"></div>
-   <div class="boarderTate" id="boarderTate"></div>
+   <div class="boarderTate" id="boarderLeft"></div>
+   <div class="boarderTate" id="boarderRight"></div>
    <div id="point-box"></div>
 
 <!-- ルームページ -->

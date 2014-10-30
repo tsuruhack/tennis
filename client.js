@@ -159,24 +159,6 @@ socket.on('update',function(data){//サーバーから盤面情報が送られ�
 	flush_board(data);//盤面の表示を更新
 });
   
-  
-  
-function windowCore(){
-        var moveX=0;
-        var moveY=0;
-        var resizeX=600;
-        var resizeY=450;
-        /* ウィンドウを絶対位置に移動 */
-        window.moveTo(moveX,moveY);
-        /* ウィンドウサイズを絶対サイズに変更 */
-        window.resizeTo(resizeX,resizeY);
-}
-
-    /* ウィンドウの読み込みが完了した時（ウィンドウがリロードされた時も） */
-window.onload=windowCore;
-    /* ウィンドウサイズが変更された時 */
-window.onresize=windowCore;    
-  
 function gameroop(){//更新を要求
 	var key = CheckKeyKind();//押されてるキーの種類を判定する
 	socket.emit('update',key,myplayernum)
@@ -193,7 +175,7 @@ function flush_board(data){//盤面の情報を更新
  		if(data.window.gameover){
 			console.log("1P:" + data.player1.gameWin);
 			console.log("2P:" + data.player2.gameWin);
- 			$("#ball").css({'right':20});
+ 			$("#ball").css({'right':270});
  			if(data.player1.gameWin){
 				if(myroom==1){
  					alert(jibun1+"の勝ち！\n" + data.player2.point + "-" + data.player1.point);
@@ -211,6 +193,8 @@ function flush_board(data){//盤面の情報を更新
 			$("#point-box").text(data.player2.point + "-" + data.player1.point);
  		}
 	  	$("#enebox").css({'bottom':data.player2.barPosition});
+	  	if(data.ball.isHitSound){
+	  	}
 }
   
   
